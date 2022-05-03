@@ -19,4 +19,13 @@ import java.util.Objects;
 public class User {
 
 
+    //vorübergehend hinzugefügt damit es keine error gingt
+    public String getUsername() {
+        return "";
+    }
+
+    //vorübergehend hinzugefügt damit es keine error gingt
+    public String getPassword() {
+        return "";
+    }
 }
