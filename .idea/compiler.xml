@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="CarRentalCars" />
+        <module name="CarRentalCurrency" />
+        <module name="CarRentalUser" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="CarRentalCars" target="1.8" />
+      <module name="CarRentalCurrency" target="1.8" />
+      <module name="CarRentalUser" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="CarRentalCars" options="-parameters" />
+      <module name="CarRentalCurrency" options="-parameters" />
+      <module name="CarRentalUser" options="-parameters" />
+    </option>
+  </component>
+</project>
