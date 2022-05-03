@@ -3,6 +3,9 @@ package com.example.carrentalcars.service;
 import com.example.carrentalcars.entity.Car;
 import com.example.carrentalcars.repository.CarRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +15,16 @@ import java.util.Optional;
 @Service
 public class CarService {
     private CarRepository carRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CarService.class);
 
     @Autowired
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
+    }
+
+    @RabbitListener(queues = "${spring.rabbitmq.queue}")
+    public void receivedMessage(Long message) {
+        logger.info("Received with userid: {}", message);
     }
 
     public Car createNewCar(Car car) {
@@ -38,11 +47,4 @@ public class CarService {
         return carRepository.getAvailableCars();
     }
 
-    public List<Double> getPricesOfAvailableCars() {
-        return carRepository.getPricesOfAvailableCars();
-    }
-
-    public List<Double> getPricesOfAllCars() {
-        return carRepository.getPricesOfAllCars();
-    }
 }

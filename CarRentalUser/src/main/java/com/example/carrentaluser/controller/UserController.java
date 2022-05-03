@@ -2,26 +2,35 @@ package com.example.carrentaluser.controller;
 
 import com.example.carrentaluser.entity.User;
 import com.example.carrentaluser.exception.*;
-import com.example.carrentaluser.repository.UserRepository;
 import com.example.carrentaluser.service.UserService;
-import com.example.carrentaluser.controller.UserController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 public class UserController {
     private UserService userService;
-
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @Value("${app.message}")
+    private String response;
+
+    @PostMapping("/produce")
+    public ResponseEntity<String> sendMessage(@RequestBody User user) {
+        userService.sendMessage(user.getId());
+        logger.info("user sent: " + user);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
