@@ -44,11 +44,14 @@ public class UserController {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate() {
-
-        return null;
+    public ResponseEntity<?> authenticate(@RequestBody User user) {
+        try {
+            User userEntity = userService.getUser(user.getUsername(), user.getPassword());
+            return new ResponseEntity<>(userEntity, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
-
 
     @GetMapping("/users/{userId}/cars")
     public ResponseEntity<?> getCars(@PathVariable final Long userId, @RequestParam(name = "currency") String currency) {
