@@ -10,12 +10,12 @@ import java.util.List;
 
 @Repository
 public interface CarRepository extends MongoRepository<Car, Long> {
-    @Query("FROM Car WHERE user.id IS NULL")
+    //@Query("FROM Car WHERE user.id IS NULL")
     List<Car> getAvailableCars();
 
-    @Query("SELECT dayPrice FROM Car WHERE user.id IS NULL")
+   // @Query("SELECT dayPrice FROM Car WHERE user.id IS NULL")
     List<Double> getPricesOfAvailableCars();
 
-    @Query("SELECT dayPrice FROM Car")
+   // @Query("SELECT dayPrice FROM Car")
     List<Double> getPricesOfAllCars();
 }
