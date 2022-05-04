@@ -46,4 +46,12 @@ public class UserService{
         }
         return user;
     }
+
+    public User getUser(String username) {
+        User user = userRepository.findByUsername(username);
+        if(user == null) {
+            throw new IllegalArgumentException();
+        }
+        return user;
+    }
 }
