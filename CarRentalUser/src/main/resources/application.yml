@@ -8,13 +8,5 @@ spring:
     username: guest
     exchange: user.exchange
     routingkey: user.routingkey
-  data:
-    mongodb:
-      authentication-database: admin
-      username: root
-      password: root
-      database: test_db
-      port: 27017
-      host: localhost
 server:
   port: 8081
