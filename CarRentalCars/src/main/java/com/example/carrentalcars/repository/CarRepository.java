@@ -18,6 +18,6 @@ public interface CarRepository extends MongoRepository<Car, Long> {
     List<Double> getPricesOfAvailableCars();
 
    // @Query("SELECT dayPrice FROM Car")
-   @Query( fields = "{'dayPrice':1}")
+   @Query( fields = "{'dayPrice':1,'id':0}")
     List<Double> getPricesOfAllCars();
 }
