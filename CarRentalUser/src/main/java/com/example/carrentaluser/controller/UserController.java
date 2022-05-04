@@ -36,9 +36,8 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User newUser) {
         try {
-            //User userEntity = userService.createNewUser(newUser);
-            //return new ResponseEntity<>(userEntity, HttpStatus.CREATED);
-            return null;
+            User userEntity = userService.createNewUser(newUser);
+            return new ResponseEntity<>(userEntity, HttpStatus.CREATED);
         } catch (UsernameAlreadyExistsException e) {
             return new ResponseEntity<>(e.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT);
         }
@@ -49,6 +48,7 @@ public class UserController {
 
         return null;
     }
+
 
     @GetMapping("/users/{userId}/cars")
     public ResponseEntity<?> getCars(@PathVariable final Long userId, @RequestParam(name = "currency") String currency) {

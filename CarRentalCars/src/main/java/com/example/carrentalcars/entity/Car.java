@@ -1,32 +1,30 @@
 package com.example.carrentalcars.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Objects;
-
-//@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString(onlyExplicitlyIncluded = true)
+@Document("cars")
 public class Car {
-  /*  @Id
-   @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(nullable = false, updatable = false)
+
+    @Id
     private Long id;
 
-    @Column
     private int availableSeats;
 
-    @Column
     private String transmission;
 
-    @Column
-    private double dayPrice;*/
+    private double dayPrice;
 
+    private Long userid;
+
+    public Car(Long id, int availableSeats, String transmission, double dayPrice, Long userid) {
+        super();
+        this.id = id;
+        this.availableSeats = availableSeats;
+        this.transmission = transmission;
+        this.dayPrice = dayPrice;
+        this.userid = userid;
+    }
 }
