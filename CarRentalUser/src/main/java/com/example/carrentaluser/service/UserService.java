@@ -37,6 +37,13 @@ public class UserService{
             userRepository.save(user);
             return user;
         //}
+    }
 
+    public User getUser(String username, String password) {
+        User user = userRepository.findByUsernameAndPassword(username, password);
+        if(user == null) {
+            throw new IllegalArgumentException();
+        }
+        return user;
     }
 }
