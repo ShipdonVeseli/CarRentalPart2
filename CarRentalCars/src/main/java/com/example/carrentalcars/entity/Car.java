@@ -19,6 +19,8 @@ public class Car {
 
     private Long userid;
 
+
+
     public Car(Long id, int availableSeats, String transmission, double dayPrice, Long userid) {
         super();
         this.id = id;

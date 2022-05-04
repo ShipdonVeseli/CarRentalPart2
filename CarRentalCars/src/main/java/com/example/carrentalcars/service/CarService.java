@@ -1,6 +1,7 @@
 package com.example.carrentalcars.service;
 
 import com.example.carrentalcars.entity.Car;
+import com.example.carrentalcars.repository.CarListRepository;
 import com.example.carrentalcars.repository.CarRepository;
 
 import org.slf4j.Logger;
@@ -15,11 +16,13 @@ import java.util.Optional;
 @Service
 public class CarService {
     private CarRepository carRepository;
+    private CarListRepository carListRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
 
     @Autowired
-    public CarService(CarRepository carRepository) {
+    public CarService(CarRepository carRepository,CarListRepository carListRepository) {
         this.carRepository = carRepository;
+        this.carListRepository=carListRepository;
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue}")
@@ -37,14 +40,12 @@ public class CarService {
     
     public Car getCar(Long id) {
         Optional<Car> car = carRepository.findById(id);
-       /* if(car.isEmpty()) {
-            throw new CarDoesNotExistsException(id);
-        }*/
         return car.get();
     }
 
     public List<Car> getAvailableCars() {
-        return carRepository.getAvailableCars();
+        return carListRepository.getAvailableCars();
+
     }
 
 }
