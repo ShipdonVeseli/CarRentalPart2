@@ -5,6 +5,7 @@ import com.example.carrentaluser.exception.*;
 import com.example.carrentaluser.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -16,11 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
     private UserService userService;
+    private RabbitTemplate rabbitTemplate;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RabbitTemplate rabbitTemplate) {
         this.userService = userService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Value("${app.message}")
@@ -28,8 +31,10 @@ public class UserController {
 
     @PostMapping("/produce")
     public ResponseEntity<String> sendMessage(@RequestBody User user) {
-        //userService.sendMessage(user.getId());
-        logger.info("user sent: " + user);
+//        userService.sendMessage(user.getId());
+        logger.info("Gesendet: " + user.getId());
+        String response = (String) rabbitTemplate.convertSendAndReceive("user.exchange", "user.routingkey", "ich habe das gesendet");
+        logger.info("Empfangen: " + response);
         return ResponseEntity.ok(response);
     }
 
@@ -55,8 +60,12 @@ public class UserController {
 
     @PostMapping("/users/{userId}/cars/{carId}")
     public ResponseEntity<?> addCarToUser(@PathVariable final Long userId, @PathVariable final String carId) {
-        userService.sendMessage("add,"+userId+","+carId);
-        return null;
+        try {
+            userService.sendMessage("add," + userId + "," + carId);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/users/{userId}/cars/{carId}")

@@ -24,7 +24,7 @@ public class CarService {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue}")
-    public void receivedMessage(String message) {
+    public String receivedMessage(String message) {
         logger.info("Received with userid: {}", message);
         String[] parts = message.split(",");
         if(parts[0].equals("add")){
@@ -32,12 +32,15 @@ public class CarService {
             if(updatedcar.getUserid().equals("0")) {
                 updatedcar.setUserid(parts[1]);
                 carRepository.save(updatedcar);
+                return "successful";
             }
         }else if(parts[0].equals("remove")){
             Car updatedcar = carRepository.findById(parts[2]);
             updatedcar.setUserid("0");
             carRepository.save(updatedcar);
+            return "successful";
         }
+        return "";
     }
 
     public Car createNewCar(Car car) {

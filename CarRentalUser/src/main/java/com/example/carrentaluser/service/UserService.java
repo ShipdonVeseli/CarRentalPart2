@@ -30,8 +30,12 @@ public class UserService{
     @Value("${spring.rabbitmq.routingkey}")
     private String routingkey;
 
-    public void sendMessage(String message) {
-        rabbitTemplate.convertAndSend(exchange,routingkey, message);
+    public boolean sendMessage(String message) {
+        String response = (String) rabbitTemplate.convertSendAndReceive(exchange, routingkey, message);
+        if(response.equals("successful")) {
+            return true;
+        }
+        throw new IllegalArgumentException();
     }
 
     public User createNewUser(User user){
