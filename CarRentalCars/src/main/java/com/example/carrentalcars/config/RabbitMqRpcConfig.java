@@ -11,25 +11,27 @@ import org.springframework.amqp.core.Queue;
 
 @Configuration
 public class RabbitMqRpcConfig {
-    public static final String ROUTING_KEY = "   ";//hier echten key
-    @Value("${queue.name}")
+    @Value("${spring.rabbitmq2.routingkey}")
+    private String ROUTING_KEY
+            ;
+    @Value("${spring.rabbitmq2.queue}")
     private String queueName;
 
-    @Value("${xchange.name}")
-    private String directXchangeName;
+    @Value("${spring.rabbitmq2.exchange}")
+    private String exchange;
 
     @Bean
-    public Queue queue() {
+    public Queue queue2() {
         return new Queue(queueName);
     }
 
     @Bean
     public DirectExchange directExchange() {
-        return new DirectExchange(directXchangeName);
+        return new DirectExchange(exchange);
     }
 
     @Bean
-    public Binding binding(DirectExchange exchange, Queue queue) {
+    public Binding binding2(DirectExchange exchange, Queue queue) {
         return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
     }
 
