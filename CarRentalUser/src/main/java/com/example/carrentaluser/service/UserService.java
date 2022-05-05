@@ -1,15 +1,10 @@
 package com.example.carrentaluser.service;
-import com.example.carrentaluser.exception.*;
 import com.example.carrentaluser.entity.User;
 import com.example.carrentaluser.repository.UserRepository;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-
-import java.util.Optional;
 
 @Service
 public class UserService{
@@ -33,10 +28,8 @@ public class UserService{
     }
 
     public User createNewUser(User user){
-        //if(userRepository.findByUsername(user.getUsername()) == null){
             userRepository.save(user);
             return user;
-        //}
     }
 
     public User getUser(String username, String password) {
