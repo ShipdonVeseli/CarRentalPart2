@@ -3,7 +3,11 @@ package com.example.carrentalcars.controller;
 import com.example.carrentalcars.entity.Car;
 import com.example.carrentalcars.service.CarService;
 import com.example.carrentalcars.exception.*;
+import com.rabbitmq.client.RpcClient;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,17 @@ import java.util.List;
 @RequestMapping("/cars")
 public class CarController {
     private CarService carService;
+
+
+
+    @Value("${spring.rabbitmq.routingkey}")
+    private String ROUTING_KEY;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private DirectExchange directExchange;
 
     @Autowired
     public CarController(CarService carService) {
@@ -54,6 +69,19 @@ public class CarController {
     public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency) {
         List<Car> availableCars = carService.getCarsByUserId("0");
         return new ResponseEntity<>(availableCars, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/send")
+    public ResponseEntity<?> send() {
+        return new ResponseEntity<>(send(1), HttpStatus.OK);
+    }
+
+    public long send(int n) {
+        Long response = (Long) rabbitTemplate.convertSendAndReceive(directExchange.getName(), ROUTING_KEY, n);
+
+        System.out.println("Got " + response + "");
+        return response;
     }
 
 
