@@ -43,7 +43,7 @@ public class RabbitMqRpcConfig {
     }
 
     @Bean
-    public RpcClient client() {
+    public RpcClient rpcClient() {
         return new RpcClient();
     }
 }

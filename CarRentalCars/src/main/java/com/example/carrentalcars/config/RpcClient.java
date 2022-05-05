@@ -8,8 +8,8 @@ public class RpcClient {
 
 
     @Value("${spring.rabbitmq.routingkey}")
-    private String ROUTING_KEY
-            ;
+    private String ROUTING_KEY;
+
     @Value("${spring.rabbitmq2.queue}")
     private String queueName;
 
@@ -28,4 +28,5 @@ public class RpcClient {
 
         System.out.println("Got " + response + "");
     }
+
 }
