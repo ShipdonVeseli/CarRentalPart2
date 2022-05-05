@@ -7,5 +7,15 @@ spring:
     exchange: user.exchange
     queue: user.queue
     routingkey: user.routingkey
+
+  rabbitmq2:
+    host: localhost
+    password: guest
+    port: 15672
+    username: guest
+    exchange: currency.exchange
+    queue: currency.queue
+    routingkey: currency.routingkey
+
 server:
   port: 8080
