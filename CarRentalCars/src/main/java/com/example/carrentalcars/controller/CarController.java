@@ -84,5 +84,13 @@ public class CarController {
         return response;
     }
 
+    public double changeCurrency(String currency,double value){
+        String message=currency+","+value;
+        Double response = (Double) rabbitTemplate.convertSendAndReceive(directExchange.getName(), ROUTING_KEY, message);
+
+        System.out.println("Got " + response + "");
+        return response;
+    }
+
 
 }
