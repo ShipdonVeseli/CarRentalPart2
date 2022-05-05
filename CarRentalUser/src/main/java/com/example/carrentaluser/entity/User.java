@@ -15,12 +15,12 @@ import java.io.Serializable;
 @Setter
 public class User implements Serializable {
     @Id
-    private Long id;
+    private String id;
 
     private String username;
     private String password;
 
-    public User(Long id, String username, String password) {
+    public User(String id, String username, String password) {
         super();
         this.id = id;
         this.username = username;

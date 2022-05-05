@@ -9,6 +9,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +24,20 @@ public class CarService {
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue}")
-    public void receivedMessage(Long message) {
+    public void receivedMessage(String message) {
         logger.info("Received with userid: {}", message);
+        String[] parts = message.split(",");
+        if(parts[0].equals("add")){
+            Car updatedcar = carRepository.findById(parts[2]);
+            if(updatedcar.getUserid().equals("0")) {
+                updatedcar.setUserid(parts[1]);
+                carRepository.save(updatedcar);
+            }
+        }else if(parts[0].equals("remove")){
+            Car updatedcar = carRepository.findById(parts[2]);
+            updatedcar.setUserid("0");
+            carRepository.save(updatedcar);
+        }
     }
 
     public Car createNewCar(Car car) {

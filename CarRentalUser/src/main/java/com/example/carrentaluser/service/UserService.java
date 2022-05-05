@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService{
@@ -28,15 +29,18 @@ public class UserService{
     @Value("${spring.rabbitmq.routingkey}")
     private String routingkey;
 
-    public void sendMessage(Long userId) {
-        rabbitTemplate.convertAndSend(exchange,routingkey, userId);
+    public void sendMessage(String message) {
+        rabbitTemplate.convertAndSend(exchange,routingkey, message);
     }
 
     public User createNewUser(User user){
-        //if(userRepository.findByUsername(user.getUsername()) == null){
+        if(userRepository.findByUsername(user.getUsername()) == null) {
+            user.setId(UUID.randomUUID().toString());
             userRepository.save(user);
             return user;
-        //}
+        }else{
+            throw new UsernameAlreadyExistsException(user.getUsername());
+        }
     }
 
     public User getUser(String username, String password) {

@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping("/produce")
     public ResponseEntity<String> sendMessage(@RequestBody User user) {
-        userService.sendMessage(user.getId());
+        //userService.sendMessage(user.getId());
         logger.info("user sent: " + user);
         return ResponseEntity.ok(response);
     }
@@ -53,18 +53,15 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/{userId}/cars")
-    public ResponseEntity<?> getCars(@PathVariable final Long userId, @RequestParam(name = "currency") String currency) {
-        return null;
-    }
-
     @PostMapping("/users/{userId}/cars/{carId}")
-    public ResponseEntity<?> addCarToUser(@PathVariable final Long userId, @PathVariable final Long carId) {
+    public ResponseEntity<?> addCarToUser(@PathVariable final Long userId, @PathVariable final String carId) {
+        userService.sendMessage("add,"+userId+","+carId);
         return null;
     }
 
     @DeleteMapping("/users/{userId}/cars/{carId}")
-    public ResponseEntity<?> removeCarFromUser(@PathVariable final Long userId, @PathVariable final Long carId) {
+    public ResponseEntity<?> removeCarFromUser(@PathVariable final Long userId, @PathVariable final String carId) {
+        userService.sendMessage("remove,"+userId+","+carId);
         return null;
     }
 

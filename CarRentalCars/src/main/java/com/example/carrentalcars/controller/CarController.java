@@ -44,6 +44,12 @@ public class CarController {
         }
     }
 
+    @GetMapping("/users/{userId}/cars")
+    public ResponseEntity<?> getCars(@PathVariable final String userId, @RequestParam(name = "currency") String currency) {
+        List<Car> availableCars = carService.getCarsByUserId(userId);
+        return new ResponseEntity<>(availableCars, HttpStatus.OK);
+    }
+
     @GetMapping("/availableCars")
     public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency) {
         List<Car> availableCars = carService.getCarsByUserId("0");
