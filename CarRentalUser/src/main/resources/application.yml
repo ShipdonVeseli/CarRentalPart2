@@ -8,5 +8,7 @@ spring:
     username: guest
     exchange: user.exchange
     routingkey: user.routingkey
+    publisher-confirm-type: correlated
+    publisher-returns: true
 server:
   port: 8081

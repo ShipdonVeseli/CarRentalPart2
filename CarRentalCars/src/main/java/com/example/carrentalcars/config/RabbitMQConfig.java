@@ -30,23 +30,48 @@ public class RabbitMQConfig {
     @Value("${spring.rabbitmq.host}")
     private String host;
 
+    public static final String RPC_QUEUE1 = "queue_1";
+    public static final String RPC_QUEUE2 = "queue_2";
+    public static final String RPC_EXCHANGE = "rpc_exchange";
+
+    /**
+     *Configure message sending queue
+     */
     @Bean
-    Queue queue() {
-        return new Queue(queue, true);
+    Queue msgQueue() {
+        return new Queue(RPC_QUEUE1);
     }
 
+    /**
+     *Set return queue
+     */
     @Bean
-    Exchange myExchange() {
-        return ExchangeBuilder.directExchange(exchange).durable(true).build();
+    Queue replyQueue() {
+        return new Queue(RPC_QUEUE2);
     }
 
+    /**
+     *Set up switch
+     */
     @Bean
-    Binding binding() {
-        return BindingBuilder
-                .bind(queue())
-                .to(myExchange())
-                .with(routingKey)
-                .noargs();
+    TopicExchange exchange() {
+        return new TopicExchange(RPC_EXCHANGE);
+    }
+
+    /**
+     *Request queue and switch binding
+     */
+    @Bean
+    Binding msgBinding() {
+        return BindingBuilder.bind(msgQueue()).to(exchange()).with(RPC_QUEUE1);
+    }
+
+    /**
+     *Return queue and switch binding
+     */
+    @Bean
+    Binding replyBinding() {
+        return BindingBuilder.bind(replyQueue()).to(exchange()).with(RPC_QUEUE2);
     }
 
     @Bean
@@ -55,17 +80,5 @@ public class RabbitMQConfig {
         cachingConnectionFactory.setUsername(username);
         cachingConnectionFactory.setPassword(password);
         return cachingConnectionFactory;
-    }
-
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
-
-    @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
-        final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter());
-        return rabbitTemplate;
     }
 }
