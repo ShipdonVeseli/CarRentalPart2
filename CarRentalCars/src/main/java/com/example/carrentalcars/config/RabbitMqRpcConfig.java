@@ -1,12 +1,9 @@
 package com.example.carrentalcars.config;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.amqp.core.Queue;
 
 
 @Configuration
@@ -30,9 +27,19 @@ public class RabbitMqRpcConfig {
         return new DirectExchange(exchange);
     }
 
+
     @Bean
-    public Binding binding2(DirectExchange exchange, Queue queue) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
+    Exchange myExchange2() {
+        return ExchangeBuilder.directExchange(exchange).durable(true).build();
+    }
+
+    @Bean
+    public Binding binding2() {
+        return BindingBuilder
+                .bind(queue2())
+                .to(myExchange2())
+                .with(ROUTING_KEY)
+                .noargs();
     }
 
     @Bean
