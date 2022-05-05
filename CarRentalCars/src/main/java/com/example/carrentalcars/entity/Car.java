@@ -2,14 +2,18 @@ package com.example.carrentalcars.entity;
 
 
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document("cars")
+@Getter
+@Setter
 public class Car {
 
     @Id
-    private Long id;
+    private String id;
 
     private int availableSeats;
 
@@ -17,11 +21,11 @@ public class Car {
 
     private double dayPrice;
 
-    private Long userid;
+    private String userid;
 
 
 
-    public Car(Long id, int availableSeats, String transmission, double dayPrice, Long userid) {
+    public Car(String id, int availableSeats, String transmission, double dayPrice, String userid) {
         super();
         this.id = id;
         this.availableSeats = availableSeats;

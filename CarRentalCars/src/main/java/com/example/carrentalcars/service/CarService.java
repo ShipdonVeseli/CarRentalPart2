@@ -1,9 +1,8 @@
 package com.example.carrentalcars.service;
 
 import com.example.carrentalcars.entity.Car;
-import com.example.carrentalcars.repository.CarListRepository;
-import com.example.carrentalcars.repository.CarRepository;
 
+import com.example.carrentalcars.repository.CarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -11,18 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class CarService {
     private CarRepository carRepository;
-    private CarListRepository carListRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
 
     @Autowired
-    public CarService(CarRepository carRepository,CarListRepository carListRepository) {
+    public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
-        this.carListRepository=carListRepository;
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue}")
@@ -31,6 +28,7 @@ public class CarService {
     }
 
     public Car createNewCar(Car car) {
+        car.setId(UUID.randomUUID().toString());
         return carRepository.save(car);
     }
 
@@ -38,14 +36,8 @@ public class CarService {
         return carRepository.findAll();
     }
     
-    public Car getCar(Long id) {
-        Optional<Car> car = carRepository.findById(id);
-        return car.get();
-    }
+    public Car getCar(String id) { return carRepository.findById(id); }
 
-    public List<Car> getAvailableCars() {
-        return carListRepository.getAvailableCars();
-
-    }
+    public List<Car> getCarsByUserId(String id) { return carRepository.findByUserid(id); }
 
 }
