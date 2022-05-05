@@ -23,6 +23,7 @@ public class UserService{
         this.userRepository = userRepository;
     }
 
+
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
