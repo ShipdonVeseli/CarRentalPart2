@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" if-exists="true" version="2.1">
+      
+    <!--
+
+Diese Datei wurde mit der JavaTM Architecture for XML Binding(JAXB) Reference Implementation, v2.3.0 generiert 
+Siehe <a href="https://javaee.github.io/jaxb-v2/">https://javaee.github.io/jaxb-v2/</a> 
+Änderungen an dieser Datei gehen bei einer Neukompilierung des Quellschemas verloren. 
+Generiert: 2022.05.06 um 07:57:10 PM CEST 
+
+  -->
+      
+    <bindings xmlns:tns="http://currencyservice.com" if-exists="true" scd="x-schema::tns">
+            
+        <schemaBindings map="false">
+                  
+            <package name="com.example.carrentalcars"/>
+                
+        </schemaBindings>
+            
+        <bindings if-exists="true" scd="tns:convertCurrency">
+                  
+            <class ref="com.example.carrentalcars.ConvertCurrency"/>
+                
+        </bindings>
+            
+        <bindings if-exists="true" scd="tns:convertCurrencyResponse">
+                  
+            <class ref="com.example.carrentalcars.ConvertCurrencyResponse"/>
+                
+        </bindings>
+            
+        <bindings if-exists="true" scd="tns:convertCurrencyList">
+                  
+            <class ref="com.example.carrentalcars.ConvertCurrencyList"/>
+                
+        </bindings>
+            
+        <bindings if-exists="true" scd="tns:convertCurrencyListResponse">
+                  
+            <class ref="com.example.carrentalcars.ConvertCurrencyListResponse"/>
+                
+        </bindings>
+          
+    </bindings>
+      
+    <bindings xmlns:tns="http://schemas.microsoft.com/2003/10/Serialization/Arrays" if-exists="true" scd="x-schema::tns">
+            
+        <schemaBindings map="false">
+                  
+            <package name="com.example.carrentalcars"/>
+                
+        </schemaBindings>
+            
+        <bindings if-exists="true" scd="~tns:ArrayOfdouble">
+                  
+            <class ref="com.example.carrentalcars.ArrayOfdouble"/>
+                
+        </bindings>
+          
+    </bindings>
+    
+</bindings>

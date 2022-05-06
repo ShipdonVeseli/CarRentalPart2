@@ -1,10 +1,14 @@
 package com.example.carrentalcars.service;
 
+import com.example.carrentalcars.ArrayOfdouble;
+import com.example.carrentalcars.ConvertCurrencyListResponse;
+import com.example.carrentalcars.client.CurrencyClient;
 import com.example.carrentalcars.entity.Car;
 import com.example.carrentalcars.repository.CarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +23,7 @@ public class CarService {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public CarService(CarRepository carRepository, CurrencyClient currencyClient) {
-    public CarService(CarRepository carRepository, RabbitTemplate rabbitTemplate) {
+    public CarService(CarRepository carRepository, RabbitTemplate rabbitTemplate, CurrencyClient currencyClient) {
         this.carRepository = carRepository;
         this.currencyClient = currencyClient;
         this.rabbitTemplate = rabbitTemplate;
