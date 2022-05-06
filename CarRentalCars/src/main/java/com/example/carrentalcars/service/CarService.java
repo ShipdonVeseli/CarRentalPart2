@@ -20,10 +20,11 @@ import java.util.UUID;
 public class CarService {
     private CarRepository carRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
-    private CurrencyClient currencyClient = new CurrencyClient();
+    private CurrencyClient currencyClient;
     @Autowired
-    public CarService(CarRepository carRepository) {
+    public CarService(CarRepository carRepository, CurrencyClient currencyClient) {
         this.carRepository = carRepository;
+        this.currencyClient = currencyClient;
     }
 
     @RabbitListener(queues = "${spring.rabbitmq.queue}")
@@ -52,8 +53,12 @@ public class CarService {
     }
 
     public List<Car> getAllCars(String currency) {
-        List<Car> cars = new ArrayList<>();
-        cars = carRepository.findAll();
+        List<Car> cars;
+        return convertCarCurrencies(carRepository.findAll(), currency);
+    }
+
+    private List<Car> convertCarCurrencies(List<Car> cars, String currency){
+        if(currency.equals("USD")) return cars;
         ArrayOfdouble carprices = new ArrayOfdouble();
         for(int i = 0; i < cars.size(); i++){
             carprices.getDouble().add(cars.get(i).getDayPrice());
@@ -67,6 +72,9 @@ public class CarService {
     
     public Car getCar(String id) { return carRepository.findById(id); }
 
-    public List<Car> getCarsByUserId(String id) { return carRepository.findByUserid(id); }
+    public List<Car> getCarsByUserId(String id, String currency) {
+        return convertCarCurrencies(carRepository.findByUserid(id), currency);
+
+    }
 
 }
