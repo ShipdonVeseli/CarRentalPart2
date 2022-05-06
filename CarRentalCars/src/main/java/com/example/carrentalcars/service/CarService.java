@@ -26,9 +26,12 @@ public class CarService {
         logger.info("Received with userid: {}", message);
         String[] parts = message.split(",");
         Car updatedcar = carRepository.findById(parts[1]);
-        updatedcar.setUserid("0");
-        carRepository.save(updatedcar);
-        return "successful";
+        if(updatedcar.getUserid().equals(parts[0])) {
+            updatedcar.setUserid("0");
+            carRepository.save(updatedcar);
+            return "successful";
+        }
+        return "";
     }
 
     @RabbitListener(queues = "addCar.queue")
