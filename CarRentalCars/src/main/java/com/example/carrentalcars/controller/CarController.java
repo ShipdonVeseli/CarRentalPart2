@@ -30,7 +30,7 @@ public class CarController {
 
     @GetMapping
     public ResponseEntity<?> getAllCars(@RequestParam(name = "currency") String currency) {
-        List<Car> cars = carService.getAllCars();
+        List<Car> cars = carService.getAllCars(currency);
         return new ResponseEntity<>(cars, HttpStatus.OK);
     }
     

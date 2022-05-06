@@ -51,14 +51,14 @@ public class CarService {
         return carRepository.save(car);
     }
 
-    public List<Car> getAllCars() {
+    public List<Car> getAllCars(String currency) {
         List<Car> cars = new ArrayList<>();
         cars = carRepository.findAll();
         ArrayOfdouble carprices = new ArrayOfdouble();
         for(int i = 0; i < cars.size(); i++){
             carprices.getDouble().add(cars.get(i).getDayPrice());
         }
-        ConvertCurrencyListResponse response = currencyClient.convertCurrencyListResponse(carprices,"USD", "TRY");
+        ConvertCurrencyListResponse response = currencyClient.convertCurrencyListResponse(carprices,"USD", currency);
         for(int i = 0; i < cars.size(); i++){
             cars.get(i).setDayPrice(response.getConvertCurrencyListResult().getValue().getDouble().get(i));
         }
