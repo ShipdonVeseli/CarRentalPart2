@@ -12,14 +12,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    @Value("${spring.rabbitmq.queue}")
-    private String queue;
+    private static final String REMOVECAR_QUEUE = "removeCar.queue";
+    private static final String ADDCAR_QUEUE = "addCar.queue";
+
+    private static final String REMOVECAR_ROUTINGKEY = "removeCar.routingKey";
+    private static final String ADDCAR_ROUTINGKEY = "addCar.routingKey";
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
-
-    @Value("${spring.rabbitmq.routingkey}")
-    private String routingKey;
 
     @Value("${spring.rabbitmq.username}")
     private String username;
@@ -32,7 +32,12 @@ public class RabbitMQConfig {
 
     @Bean
     Queue queue() {
-        return new Queue(queue, true);
+        return new Queue(REMOVECAR_QUEUE, true);
+    }
+
+    @Bean
+    Queue addCarQueue() {
+        return new Queue(ADDCAR_QUEUE, true);
     }
 
     @Bean
@@ -41,11 +46,20 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding binding() {
+    Binding removeCarBinding() {
         return BindingBuilder
                 .bind(queue())
                 .to(myExchange())
-                .with(routingKey)
+                .with(REMOVECAR_ROUTINGKEY)
+                .noargs();
+    }
+
+    @Bean
+    Binding addCarBinding() {
+        return BindingBuilder
+                .bind(addCarQueue())
+                .to(myExchange())
+                .with(ADDCAR_ROUTINGKEY)
                 .noargs();
     }
 

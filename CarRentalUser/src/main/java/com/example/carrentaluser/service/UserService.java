@@ -27,11 +27,16 @@ public class UserService{
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
-    @Value("${spring.rabbitmq.routingkey}")
-    private String routingkey;
+    public boolean removeCarFromUser(String message) {
+        String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "removeCar.routingKey", message);
+        if(response.equals("successful")) {
+            return true;
+        }
+        throw new IllegalArgumentException();
+    }
 
-    public boolean sendMessage(String message) {
-        String response = (String) rabbitTemplate.convertSendAndReceive(exchange, routingkey, message);
+    public boolean addCarToUser(String message) {
+        String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "addCar.routingKey", message);
         if(response.equals("successful")) {
             return true;
         }

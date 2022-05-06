@@ -26,9 +26,6 @@ public class UserController {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @Value("${app.message}")
-    private String response;
-
     @PostMapping("/produce")
     public ResponseEntity<String> sendMessage(@RequestBody User user) {
 //        userService.sendMessage(user.getId());
@@ -61,7 +58,7 @@ public class UserController {
     @PostMapping("/users/{userId}/cars/{carId}")
     public ResponseEntity<?> addCarToUser(@PathVariable final Long userId, @PathVariable final String carId) {
         try {
-            userService.sendMessage("add," + userId + "," + carId);
+            userService.addCarToUser(userId + "," + carId);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
         }
@@ -70,8 +67,12 @@ public class UserController {
 
     @DeleteMapping("/users/{userId}/cars/{carId}")
     public ResponseEntity<?> removeCarFromUser(@PathVariable final Long userId, @PathVariable final String carId) {
-        userService.sendMessage("remove,"+userId+","+carId);
-        return null;
+        try {
+            userService.removeCarFromUser(userId + "," + carId);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
