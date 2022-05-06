@@ -83,7 +83,7 @@
                 <configuration>
                     <schemaLanguage>WSDL</schemaLanguage>
                     <generatePackage>com.example.carrentalcurrency</generatePackage>
-                    <schemaDirectory>src/main/resources/wsdl</schemaDirectory>
+                    <schemaDirectory>../CarRentalCars/src/main/resources/wsdl</schemaDirectory>
                     <schemaIncludes>
                         <schemaInclude>*.wsdl</schemaInclude>
                     </schemaIncludes>

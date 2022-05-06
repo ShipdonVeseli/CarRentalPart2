@@ -1,5 +1,8 @@
 package com.example.carrentalcars.service;
 
+import com.example.carrentalcars.ArrayOfdouble;
+import com.example.carrentalcars.ConvertCurrencyListResponse;
+import com.example.carrentalcars.client.CurrencyClient;
 import com.example.carrentalcars.entity.Car;
 import com.example.carrentalcars.repository.CarRepository;
 import org.slf4j.Logger;
@@ -15,10 +18,11 @@ import java.util.UUID;
 public class CarService {
     private CarRepository carRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
-
+    private CurrencyClient currencyClient;
     @Autowired
-    public CarService(CarRepository carRepository) {
+    public CarService(CarRepository carRepository, CurrencyClient currencyClient) {
         this.carRepository = carRepository;
+        this.currencyClient = currencyClient;
     }
 
     @RabbitListener(queues = "removeCar.queue")
@@ -52,12 +56,29 @@ public class CarService {
         return carRepository.save(car);
     }
 
-    public List<Car> getAllCars() {
-        return carRepository.findAll();
+    public List<Car> getAllCars(String currency) {
+        List<Car> cars;
+        return convertCarCurrencies(carRepository.findAll(), currency);
+    }
+
+    private List<Car> convertCarCurrencies(List<Car> cars, String currency){
+        if(currency.equals("USD")) return cars;
+        ArrayOfdouble carprices = new ArrayOfdouble();
+        for(int i = 0; i < cars.size(); i++){
+            carprices.getDouble().add(cars.get(i).getDayPrice());
+        }
+        ConvertCurrencyListResponse response = currencyClient.convertCurrencyListResponse(carprices,"USD", currency);
+        for(int i = 0; i < cars.size(); i++){
+            cars.get(i).setDayPrice(response.getConvertCurrencyListResult().getValue().getDouble().get(i));
+        }
+        return cars;
     }
     
     public Car getCar(String id) { return carRepository.findById(id); }
 
-    public List<Car> getCarsByUserId(String id) { return carRepository.findByUserid(id); }
+    public List<Car> getCarsByUserId(String id, String currency) {
+        return convertCarCurrencies(carRepository.findByUserid(id), currency);
+
+    }
 
 }
