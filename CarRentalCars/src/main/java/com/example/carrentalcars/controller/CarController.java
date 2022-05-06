@@ -32,32 +32,43 @@ public class CarController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllCars(@RequestParam(name = "currency") String currency) {
-        List<Car> cars = carService.getAllCars(currency);
-        return new ResponseEntity<>(cars, HttpStatus.OK);
-    }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getCar(@PathVariable("id") String id) {
-        try {
-            Car car = carService.getCar(id);
-            return new ResponseEntity<>(car, HttpStatus.OK);
-        } catch (CarDoesNotExistsException e) {
-            return new ResponseEntity<>(e.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> getAllCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId) {
+        if(carService.checkIfUserExists(userId).equals("true")) {
+            List<Car> cars = carService.getAllCars(currency);
+            return new ResponseEntity<>(cars, HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getCar(@PathVariable("id") String id, @RequestParam(name = "userId") String userId) {
+        if(carService.checkIfUserExists(userId).equals("true")) {
+            try {
+                Car car = carService.getCar(id);
+                return new ResponseEntity<>(car, HttpStatus.OK);
+            } catch (CarDoesNotExistsException e) {
+                return new ResponseEntity<>(e.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/users/{userId}/cars")
     public ResponseEntity<?> getCars(@PathVariable final String userId, @RequestParam(name = "currency") String currency) {
-        List<Car> availableCars = carService.getCarsByUserId(userId, currency);
-        return new ResponseEntity<>(availableCars, HttpStatus.OK);
+        if(carService.checkIfUserExists(userId).equals("true")) {
+            List<Car> availableCars = carService.getCarsByUserId(userId, currency);
+            return new ResponseEntity<>(availableCars, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/availableCars")
-    public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency) {
-        List<Car> availableCars = carService.getCarsByUserId("0", currency);
-        return new ResponseEntity<>(availableCars, HttpStatus.OK);
+    public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId) {
+        if(carService.checkIfUserExists(userId).equals("true")) {
+            List<Car> availableCars = carService.getCarsByUserId("0", currency);
+            return new ResponseEntity<>(availableCars, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
-
 
 }
