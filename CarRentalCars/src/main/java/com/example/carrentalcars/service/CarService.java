@@ -1,8 +1,5 @@
 package com.example.carrentalcars.service;
 
-import com.example.carrentalcars.ArrayOfdouble;
-import com.example.carrentalcars.ConvertCurrencyListResponse;
-import com.example.carrentalcars.client.CurrencyClient;
 import com.example.carrentalcars.entity.Car;
 import com.example.carrentalcars.repository.CarRepository;
 import org.slf4j.Logger;
@@ -19,10 +16,14 @@ public class CarService {
     private CarRepository carRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
     private CurrencyClient currencyClient;
+    private RabbitTemplate rabbitTemplate;
+
     @Autowired
     public CarService(CarRepository carRepository, CurrencyClient currencyClient) {
+    public CarService(CarRepository carRepository, RabbitTemplate rabbitTemplate) {
         this.carRepository = carRepository;
         this.currencyClient = currencyClient;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RabbitListener(queues = "removeCar.queue")
@@ -49,6 +50,10 @@ public class CarService {
             return "successful";
         }
         return "";
+    }
+
+    public String checkIfUserExists(String userId) {
+        return (String) rabbitTemplate.convertSendAndReceive("user.exchange", "auth.routingKey", userId);
     }
 
     public Car createNewCar(Car car) {
