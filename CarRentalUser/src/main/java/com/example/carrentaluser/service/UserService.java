@@ -2,6 +2,7 @@ package com.example.carrentaluser.service;
 import com.example.carrentaluser.exception.*;
 import com.example.carrentaluser.entity.User;
 import com.example.carrentaluser.repository.UserRepository;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,6 +27,15 @@ public class UserService{
 
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
+
+    @RabbitListener(queues = "auth.queue")
+    public String checkIfUserExists(String message) {
+        User user = userRepository.findById(message);
+        if(user == null) {
+            return "false";
+        }
+        return "true";
+    }
 
     public boolean removeCarFromUser(String message) {
         String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "removeCar.routingKey", message);

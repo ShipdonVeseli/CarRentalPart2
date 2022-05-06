@@ -22,10 +22,13 @@ public class CarController {
     }
 
     @PostMapping
-    public ResponseEntity<Car> createNewCar(@RequestBody Car newCar) {
-        Car carEntity = carService.createNewCar(newCar);
-        System.out.println(carEntity.getId());
-        return new ResponseEntity<>(carEntity, HttpStatus.OK);
+    public ResponseEntity<Car> createNewCar(@RequestBody Car newCar, @RequestParam(name = "userId") String userId) {
+        if(carService.checkIfUserExists(userId).equals("true")) {
+            Car carEntity = carService.createNewCar(newCar);
+            System.out.println(carEntity.getId());
+            return new ResponseEntity<>(carEntity, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping

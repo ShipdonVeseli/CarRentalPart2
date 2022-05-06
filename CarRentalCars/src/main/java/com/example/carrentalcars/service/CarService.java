@@ -5,6 +5,7 @@ import com.example.carrentalcars.repository.CarRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +16,12 @@ import java.util.UUID;
 public class CarService {
     private CarRepository carRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public CarService(CarRepository carRepository) {
+    public CarService(CarRepository carRepository, RabbitTemplate rabbitTemplate) {
         this.carRepository = carRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RabbitListener(queues = "removeCar.queue")
@@ -45,6 +48,10 @@ public class CarService {
             return "successful";
         }
         return "";
+    }
+
+    public String checkIfUserExists(String userId) {
+        return (String) rabbitTemplate.convertSendAndReceive("user.exchange", "auth.routingKey", userId);
     }
 
     public Car createNewCar(Car car) {

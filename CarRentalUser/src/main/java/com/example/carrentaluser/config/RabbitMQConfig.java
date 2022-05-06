@@ -1,5 +1,6 @@
 package com.example.carrentaluser.config;
 
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -11,6 +12,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
+    private static final String AUTH_QUEUE = "auth.queue";
+    private static final String AUTH_ROUTINGKEY = "auth.routingKey";
+    private static final String EXCHANGE = "user.exchange";
+
     @Value("${spring.rabbitmq.host}")
     String host;
 
@@ -19,6 +24,25 @@ public class RabbitMQConfig {
 
     @Value("${spring.rabbitmq.password}")
     String password;
+
+    @Bean
+    Queue authQueue() {
+        return new Queue(AUTH_QUEUE, true);
+    }
+
+    @Bean
+    Exchange myExchange() {
+        return ExchangeBuilder.directExchange(EXCHANGE).durable(true).build();
+    }
+
+    @Bean
+    Binding removeCarBinding() {
+        return BindingBuilder
+                .bind(authQueue())
+                .to(myExchange())
+                .with(AUTH_ROUTINGKEY)
+                .noargs();
+    }
 
     @Bean
     CachingConnectionFactory connectionFactory() {
