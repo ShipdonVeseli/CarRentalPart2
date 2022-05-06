@@ -1,8 +1,9 @@
-package com.example.carrentalcurrency.client;
+package com.example.carrentalcars.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+
 
 import java.io.*;
 
@@ -15,7 +16,9 @@ public class SoapClientConfig {
     public SoapClientConfig() throws Exception {
         try
         {
-            InputStream resourceStream = getClass().getClassLoader().getResourceAsStream("currencyConverter.wsdl");
+        /*    File file = new File(path);
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+          */  InputStream resourceStream = getClass().getClassLoader().getResourceAsStream("currencyConverter.wsdl");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceStream));
 
             String rootNameSpace = null;
@@ -52,7 +55,7 @@ public class SoapClientConfig {
     @Bean
     public Jaxb2Marshaller marshaller(){
         Jaxb2Marshaller jaxb2Marshaller = new Jaxb2Marshaller();
-        jaxb2Marshaller.setContextPath("com.carrental.currency");
+        jaxb2Marshaller.setContextPath("com.example.carrentalcars");
         return jaxb2Marshaller;
     }
 

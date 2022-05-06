@@ -1,6 +1,6 @@
-package com.example.carrentalcurrency.client;
+package com.example.carrentalcars.client;
 
-import com.example.carrentalcurrency.*;
+import com.example.carrentalcars.*;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
 import org.springframework.ws.soap.client.core.SoapActionCallback;
 import javax.xml.bind.JAXBElement;

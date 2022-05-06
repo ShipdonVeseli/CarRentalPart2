@@ -1,4 +1,4 @@
-package com.example.carrentalcurrency.model;
+package com.example.carrentalcars.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

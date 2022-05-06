@@ -1,5 +1,8 @@
 package com.example.carrentalcars.service;
 
+import com.example.carrentalcars.ArrayOfdouble;
+import com.example.carrentalcars.ConvertCurrencyListResponse;
+import com.example.carrentalcars.client.CurrencyClient;
 import com.example.carrentalcars.entity.Car;
 
 import com.example.carrentalcars.repository.CarRepository;
@@ -17,7 +20,7 @@ import java.util.UUID;
 public class CarService {
     private CarRepository carRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
-
+    private CurrencyClient currencyClient = new CurrencyClient();
     @Autowired
     public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
@@ -49,7 +52,17 @@ public class CarService {
     }
 
     public List<Car> getAllCars() {
-        return carRepository.findAll();
+        List<Car> cars = new ArrayList<>();
+        cars = carRepository.findAll();
+        ArrayOfdouble carprices = new ArrayOfdouble();
+        for(int i = 0; i < cars.size(); i++){
+            carprices.getDouble().add(cars.get(i).getDayPrice());
+        }
+        ConvertCurrencyListResponse response = currencyClient.convertCurrencyListResponse(carprices,"USD", "TRY");
+        for(int i = 0; i < cars.size(); i++){
+            cars.get(i).setDayPrice(response.getConvertCurrencyListResult().getValue().getDouble().get(i));
+        }
+        return cars;
     }
     
     public Car getCar(String id) { return carRepository.findById(id); }
