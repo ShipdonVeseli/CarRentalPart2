@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/users/{userId}/cars/{carId}")
-    public ResponseEntity<?> addCarToUser(@PathVariable final Long userId, @PathVariable final String carId) {
+    public ResponseEntity<?> addCarToUser(@PathVariable final String userId, @PathVariable final String carId) {
         try {
             userService.addCarToUser(userId + "," + carId);
         } catch (IllegalArgumentException e) {
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{userId}/cars/{carId}")
-    public ResponseEntity<?> removeCarFromUser(@PathVariable final Long userId, @PathVariable final String carId) {
+    public ResponseEntity<?> removeCarFromUser(@PathVariable final String userId, @PathVariable final String carId) {
         try {
             userService.removeCarFromUser(userId + "," + carId);
         } catch (IllegalArgumentException e) {
