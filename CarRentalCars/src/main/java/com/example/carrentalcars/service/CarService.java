@@ -31,15 +31,19 @@ public class CarService {
 
     @RabbitListener(queues = "removeCar.queue")
     public String removeCarFromUser(String message) {
-        logger.info("Received with userid: {}", message);
-        String[] parts = message.split(",");
-        Car updatedcar = carRepository.findById(parts[1]);
-        if(updatedcar.getUserid().equals(parts[0])) {
-            updatedcar.setUserid("0");
-            carRepository.save(updatedcar);
-            return "successful";
+        try {
+            logger.info("Received with userid: {}", message);
+            String[] parts = message.split(",");
+            Car updatedcar = carRepository.findById(parts[1]);
+            if (updatedcar.getUserid().equals(parts[0])) {
+                updatedcar.setUserid("0");
+                carRepository.save(updatedcar);
+                return "successful";
+            }
+        } catch (Exception e) {
+            logger.info(e.getMessage());
         }
-        return "";
+        return "unsuccessful";
     }
 
     @RabbitListener(queues = "addCar.queue")
@@ -54,9 +58,9 @@ public class CarService {
                 return "successful";
             }
         } catch(Exception e) {
-            e.getMessage();
+            logger.info(e.getMessage());
         }
-        return "";
+        return "unsuccessful";
     }
 
     public String checkIfUserExists(String userId) {
