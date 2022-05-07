@@ -46,12 +46,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody User user) {
-        try {
-            User userEntity = userService.getUser(user.getUsername(), user.getPassword());
-            return new ResponseEntity<>(userEntity, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>("Username doesn't exist. Please register first.", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> authenticate(@RequestBody User user, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if(userService.checkAuthentication(userIdAuth)) {
+            try {
+                User userEntity = userService.getUser(user.getUsername(), user.getPassword());
+                return new ResponseEntity<>(userEntity, HttpStatus.OK);
+            } catch (IllegalArgumentException e) {
+                return new ResponseEntity<>("Username doesn't exist. Please register first.", HttpStatus.BAD_REQUEST);
+            }
+        } else {
+            return new ResponseEntity<>("User is not authenticated.", HttpStatus.UNAUTHORIZED);
         }
     }
 

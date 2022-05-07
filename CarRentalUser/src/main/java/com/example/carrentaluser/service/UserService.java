@@ -29,7 +29,7 @@ public class UserService{
     private String exchange;
 
     @RabbitListener(queues = "auth.queue")
-    public String checkIfUserExists(String message) {
+    public String checkIfUserExistsResponse(String message) {
         User user = userRepository.findById(message);
         if(user == null) {
             return "false";
@@ -77,5 +77,13 @@ public class UserService{
             throw new IllegalArgumentException();
         }
         return user;
+    }
+
+    public boolean checkAuthentication(String userId) {
+        User user = userRepository.findById(userId);
+        if(user == null) {
+            return false;
+        }
+        return true;
     }
 }
