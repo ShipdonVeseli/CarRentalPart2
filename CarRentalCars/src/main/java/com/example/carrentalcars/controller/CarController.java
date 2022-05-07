@@ -23,8 +23,8 @@ public class CarController {
     }
 
     @PostMapping("/cars")
-    public ResponseEntity<Car> createNewCar(@RequestBody Car newCar, @RequestParam(name = "userId") String userId) {
-        if(carService.checkIfUserExists(userId).equals("true")) {
+    public ResponseEntity<Car> createNewCar(@RequestBody Car newCar, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if(carService.checkIfUserExists(userIdAuth).equals("true")) {
             Car carEntity = carService.createNewCar(newCar);
             System.out.println(carEntity.getId());
             return new ResponseEntity<>(carEntity, HttpStatus.OK);
@@ -33,8 +33,8 @@ public class CarController {
     }
 
     @GetMapping("/cars")
-    public ResponseEntity<?> getAllCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId) {
-        if(carService.checkIfUserExists(userId).equals("true")) {
+    public ResponseEntity<?> getAllCars(@RequestParam(name = "currency") String currency, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if(carService.checkIfUserExists(userIdAuth).equals("true")) {
             List<Car> cars = carService.getAllCars(currency);
             return new ResponseEntity<>(cars, HttpStatus.OK);
         }
@@ -42,8 +42,8 @@ public class CarController {
     }
 
     @GetMapping("/cars/{id}")
-    public ResponseEntity<?> getCar(@PathVariable("id") String id, @RequestParam(name = "userId") String userId) {
-        if(carService.checkIfUserExists(userId).equals("true")) {
+    public ResponseEntity<?> getCar(@PathVariable("id") String id, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if(carService.checkIfUserExists(userIdAuth).equals("true")) {
             try {
                 Car car = carService.getCar(id);
                 return new ResponseEntity<>(car, HttpStatus.OK);
@@ -55,8 +55,8 @@ public class CarController {
     }
 
     @GetMapping("users/{userId}/cars")
-    public ResponseEntity<?> getCars(@PathVariable final String userId, @RequestParam(name = "currency") String currency) {
-        if(carService.checkIfUserExists(userId).equals("true")) {
+    public ResponseEntity<?> getCars(@PathVariable final String userId, @RequestParam(name = "currency") String currency, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if(carService.checkIfUserExists(userIdAuth).equals("true")) {
             List<Car> availableCars = carService.getCarsByUserId(userId, currency);
             return new ResponseEntity<>(availableCars, HttpStatus.OK);
         }
@@ -64,8 +64,8 @@ public class CarController {
     }
 
     @GetMapping("/cars/availableCars")
-    public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId) {
-        if(carService.checkIfUserExists(userId).equals("true")) {
+    public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if(carService.checkIfUserExists(userIdAuth).equals("true")) {
             List<Car> availableCars = carService.getCarsByUserId("0", currency);
             return new ResponseEntity<>(availableCars, HttpStatus.OK);
         }
