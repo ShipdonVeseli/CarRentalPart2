@@ -24,7 +24,6 @@ public class UserService{
         this.userRepository = userRepository;
     }
 
-
     @Value("${spring.rabbitmq.exchange}")
     private String exchange;
 
@@ -37,20 +36,18 @@ public class UserService{
         return "true";
     }
 
-    public boolean removeCarFromUser(String message) {
+    public void removeCarFromUser(String message) {
         String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "removeCar.routingKey", message);
-        if(response.equals("successful")) {
-            return true;
+        if(!response.equals("successful")) {
+            throw new IllegalArgumentException();
         }
-        throw new IllegalArgumentException();
     }
 
-    public boolean addCarToUser(String message) {
+    public void addCarToUser(String message) {
         String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "addCar.routingKey", message);
-        if(response.equals("successful")) {
-            return true;
+        if(!response.equals("successful")) {
+            throw new IllegalArgumentException();
         }
-        throw new IllegalArgumentException();
     }
 
     public User createNewUser(User user){

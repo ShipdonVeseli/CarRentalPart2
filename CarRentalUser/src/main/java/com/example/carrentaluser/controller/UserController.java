@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+
 @CrossOrigin
 @RestController
 public class UserController {
@@ -26,15 +27,6 @@ public class UserController {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @PostMapping("/produce")
-    public ResponseEntity<String> sendMessage(@RequestBody User user) {
-//        userService.sendMessage(user.getId());
-        logger.info("Gesendet: " + user.getId());
-        String response = (String) rabbitTemplate.convertSendAndReceive("user.exchange", "user.routingkey", "ich habe das gesendet");
-        logger.info("Empfangen: " + response);
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody User newUser) {
         try {
@@ -46,37 +38,41 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody User user, @RequestHeader(name = "Authorization") String userIdAuth) {
-        if(userService.checkAuthentication(userIdAuth)) {
+    public ResponseEntity<?> authenticate(@RequestBody User user) {
+        try {
+            User userEntity = userService.getUser(user.getUsername(), user.getPassword());
+            return new ResponseEntity<>(userEntity, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Username doesn't exist. Please register first.", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/users/{userId}/cars/{carId}")
+    public ResponseEntity<?> addCarToUser(@PathVariable final String userId, @PathVariable final String carId, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if (userService.checkAuthentication(userIdAuth)) {
             try {
-                User userEntity = userService.getUser(user.getUsername(), user.getPassword());
-                return new ResponseEntity<>(userEntity, HttpStatus.OK);
+                userService.addCarToUser(userId + "," + carId);
             } catch (IllegalArgumentException e) {
-                return new ResponseEntity<>("Username doesn't exist. Please register first.", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
             }
+            return new ResponseEntity<>(HttpStatus.OK);
         } else {
             return new ResponseEntity<>("User is not authenticated.", HttpStatus.UNAUTHORIZED);
         }
     }
 
-    @PostMapping("/users/{userId}/cars/{carId}")
-    public ResponseEntity<?> addCarToUser(@PathVariable final String userId, @PathVariable final String carId) {
-        try {
-            userService.addCarToUser(userId + "," + carId);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @DeleteMapping("/users/{userId}/cars/{carId}")
-    public ResponseEntity<?> removeCarFromUser(@PathVariable final String userId, @PathVariable final String carId) {
-        try {
-            userService.removeCarFromUser(userId + "," + carId);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    public ResponseEntity<?> removeCarFromUser(@PathVariable final String userId, @PathVariable final String carId, @RequestHeader(name = "Authorization") String userIdAuth) {
+        if (userService.checkAuthentication(userIdAuth)) {
+            try {
+                userService.removeCarFromUser(userId + "," + carId);
+            } catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User is not authenticated.", HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
