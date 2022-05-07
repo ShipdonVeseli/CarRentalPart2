@@ -51,7 +51,7 @@ public class UserController {
             User userEntity = userService.getUser(user.getUsername(), user.getPassword());
             return new ResponseEntity<>(userEntity, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Username doesn't exist. Please register first.", HttpStatus.BAD_REQUEST);
         }
     }
 
