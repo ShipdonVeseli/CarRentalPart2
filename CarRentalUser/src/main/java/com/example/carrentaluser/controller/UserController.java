@@ -5,7 +5,6 @@ import com.example.carrentaluser.exception.*;
 import com.example.carrentaluser.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,13 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class UserController {
     private UserService userService;
-    private RabbitTemplate rabbitTemplate;
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    public UserController(UserService userService, RabbitTemplate rabbitTemplate) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.rabbitTemplate = rabbitTemplate;
     }
 
     @PostMapping("/register")

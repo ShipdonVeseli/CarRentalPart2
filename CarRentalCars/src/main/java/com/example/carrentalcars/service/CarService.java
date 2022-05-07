@@ -17,8 +17,8 @@ import java.util.UUID;
 
 @Service
 public class CarService {
-    private CarRepository carRepository;
     private static final Logger logger = LoggerFactory.getLogger(CarService.class);
+    private CarRepository carRepository;
     private CurrencyClient currencyClient;
     private RabbitTemplate rabbitTemplate;
 
