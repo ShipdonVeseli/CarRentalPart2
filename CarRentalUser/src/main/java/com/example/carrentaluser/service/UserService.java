@@ -37,16 +37,26 @@ public class UserService{
     }
 
     public void removeCarFromUser(String message) {
-        String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "removeCar.routingKey", message);
-        if(!response.equals("successful")) {
-            throw new IllegalArgumentException();
+        String userId = getUserIdFromMessage(message);
+        if(checkIfUserExists(userId)) {
+            String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "removeCar.routingKey", message);
+            if (!response.equals("successful")) {
+                throw new IllegalArgumentException();
+            }
+        } else {
+            throw new UserDoesNotExistsException(userId);
         }
     }
 
     public void addCarToUser(String message) {
-        String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "addCar.routingKey", message);
-        if(!response.equals("successful")) {
-            throw new IllegalArgumentException();
+        String userId = getUserIdFromMessage(message);
+        if(checkIfUserExists(userId)) {
+            String response = (String) rabbitTemplate.convertSendAndReceive(exchange, "addCar.routingKey", message);
+            if (!response.equals("successful")) {
+                throw new IllegalArgumentException();
+            }
+        } else {
+            throw new UserDoesNotExistsException(userId);
         }
     }
 
@@ -76,11 +86,16 @@ public class UserService{
         return user;
     }
 
-    public boolean checkAuthentication(String userId) {
+    public boolean checkIfUserExists(String userId) {
         User user = userRepository.findById(userId);
         if(user == null) {
             return false;
         }
         return true;
+    }
+
+    public String getUserIdFromMessage(String message) {
+        String[] parts = message.split(",");
+        return parts[0];
     }
 }

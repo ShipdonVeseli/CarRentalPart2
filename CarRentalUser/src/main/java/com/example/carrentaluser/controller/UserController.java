@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,10 +48,10 @@ public class UserController {
 
     @PostMapping("/users/{userId}/cars/{carId}")
     public ResponseEntity<?> addCarToUser(@PathVariable final String userId, @PathVariable final String carId, @RequestHeader(name = "Authorization") String userIdAuth) {
-        if (userService.checkAuthentication(userIdAuth)) {
+        if (userService.checkIfUserExists(userIdAuth)) {
             try {
                 userService.addCarToUser(userId + "," + carId);
-            } catch (IllegalArgumentException e) {
+            } catch (UserDoesNotExistsException | IllegalArgumentException e) {
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
             }
             return new ResponseEntity<>(HttpStatus.OK);
@@ -63,10 +62,10 @@ public class UserController {
 
     @DeleteMapping("/users/{userId}/cars/{carId}")
     public ResponseEntity<?> removeCarFromUser(@PathVariable final String userId, @PathVariable final String carId, @RequestHeader(name = "Authorization") String userIdAuth) {
-        if (userService.checkAuthentication(userIdAuth)) {
+        if (userService.checkIfUserExists(userIdAuth)) {
             try {
                 userService.removeCarFromUser(userId + "," + carId);
-            } catch (IllegalArgumentException e) {
+            } catch (UserDoesNotExistsException | IllegalArgumentException e) {
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
             }
             return new ResponseEntity<>(HttpStatus.OK);
