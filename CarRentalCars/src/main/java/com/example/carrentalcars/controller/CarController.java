@@ -64,7 +64,7 @@ public class CarController {
     }
 
     @GetMapping("/cars/availableCars")
-    public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId, @RequestHeader(name = "Authorization") String userIdAuth) {
+    public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency, @RequestHeader(name = "Authorization") String userIdAuth) {
         if(carService.checkIfUserExists(userIdAuth).equals("true")) {
             List<Car> availableCars = carService.getCarsByUserId("0", currency);
             return new ResponseEntity<>(availableCars, HttpStatus.OK);
