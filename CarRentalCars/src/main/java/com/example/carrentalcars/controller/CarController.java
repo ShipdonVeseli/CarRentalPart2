@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
-@RequestMapping("/cars")
+@RequestMapping
 public class CarController {
     private CarService carService;
 
@@ -21,7 +22,7 @@ public class CarController {
         this.carService = carService;
     }
 
-    @PostMapping
+    @PostMapping("/cars")
     public ResponseEntity<Car> createNewCar(@RequestBody Car newCar, @RequestParam(name = "userId") String userId) {
         if(carService.checkIfUserExists(userId).equals("true")) {
             Car carEntity = carService.createNewCar(newCar);
@@ -31,7 +32,7 @@ public class CarController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    @GetMapping
+    @GetMapping("/cars")
     public ResponseEntity<?> getAllCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId) {
         if(carService.checkIfUserExists(userId).equals("true")) {
             List<Car> cars = carService.getAllCars(currency);
@@ -40,7 +41,7 @@ public class CarController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/cars/{id}")
     public ResponseEntity<?> getCar(@PathVariable("id") String id, @RequestParam(name = "userId") String userId) {
         if(carService.checkIfUserExists(userId).equals("true")) {
             try {
@@ -53,7 +54,7 @@ public class CarController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    @GetMapping("/users/{userId}/cars")
+    @GetMapping("users/{userId}/cars")
     public ResponseEntity<?> getCars(@PathVariable final String userId, @RequestParam(name = "currency") String currency) {
         if(carService.checkIfUserExists(userId).equals("true")) {
             List<Car> availableCars = carService.getCarsByUserId(userId, currency);
@@ -62,7 +63,7 @@ public class CarController {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    @GetMapping("/availableCars")
+    @GetMapping("/cars/availableCars")
     public ResponseEntity<?> getAvailableCars(@RequestParam(name = "currency") String currency, @RequestParam(name = "userId") String userId) {
         if(carService.checkIfUserExists(userId).equals("true")) {
             List<Car> availableCars = carService.getCarsByUserId("0", currency);

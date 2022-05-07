@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
-
+@CrossOrigin
 @RestController
 public class UserController {
     private UserService userService;
@@ -44,7 +44,7 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT);
         }
     }
-    
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticate(@RequestBody User user) {
         try {

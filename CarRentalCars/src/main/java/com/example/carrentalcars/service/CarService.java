@@ -44,13 +44,17 @@ public class CarService {
 
     @RabbitListener(queues = "addCar.queue")
     public String addCarToUser(String message) {
-        logger.info("Received with userid: {}", message);
-        String[] parts = message.split(",");
-        Car updatedcar = carRepository.findById(parts[1]);
-        if(updatedcar.getUserid().equals("0")) {
-            updatedcar.setUserid(parts[0]);
-            carRepository.save(updatedcar);
-            return "successful";
+        try {
+            logger.info("Received with userid: {}", message);
+            String[] parts = message.split(",");
+            Car updatedcar = carRepository.findById(parts[1]);
+            if (updatedcar.getUserid().equals("0")) {
+                updatedcar.setUserid(parts[0]);
+                carRepository.save(updatedcar);
+                return "successful";
+            }
+        } catch(Exception e) {
+            e.getMessage();
         }
         return "";
     }
