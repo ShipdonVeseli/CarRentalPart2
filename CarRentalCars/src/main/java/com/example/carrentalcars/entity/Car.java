@@ -33,4 +33,15 @@ public class Car {
         this.dayPrice = dayPrice;
         this.userid = userid;
     }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id='" + id + '\'' +
+                ", availableSeats=" + availableSeats +
+                ", transmission='" + transmission + '\'' +
+                ", dayPrice=" + dayPrice +
+                ", userid='" + userid + '\'' +
+                '}';
+    }
 }
